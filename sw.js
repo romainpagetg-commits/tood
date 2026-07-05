@@ -1,5 +1,5 @@
-const CACHE = 'capture-v1';
-const SHELL = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const CACHE = 'tood-v2';
+const SHELL = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png', './logo-header.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)));
@@ -15,9 +15,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  // Jamais de cache pour l'API Apps Script
   if (url.hostname.includes('script.google.com') || url.hostname.includes('googleusercontent.com')) return;
-  // Shell : cache d'abord, mise à jour en arrière-plan
   e.respondWith(
     caches.match(e.request).then(cached => {
       const fresh = fetch(e.request).then(res => {

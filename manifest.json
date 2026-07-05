@@ -1,11 +1,11 @@
 {
-  "name": "Capture",
-  "short_name": "Capture",
-  "description": "Capture rapide de tâches, rappels Calendar et analyse IA de screenshots",
+  "name": "TOOD",
+  "short_name": "TOOD",
+  "description": "Capture rapide de tâches, rappels et analyse IA — pour ne plus rien oublier",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#12141C",
-  "theme_color": "#12141C",
+  "background_color": "#FBF6EF",
+  "theme_color": "#FBF6EF",
   "lang": "fr",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
