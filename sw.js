@@ -1,4 +1,4 @@
-const CACHE = 'tood-v2';
+const CACHE = 'tood-v3';
 const SHELL = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png', './logo-header.png'];
 
 self.addEventListener('install', e => {
