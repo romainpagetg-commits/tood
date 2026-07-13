@@ -153,6 +153,163 @@
   #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
   @media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important;}}
+
+  /* ============================================================
+     TOOD+ — module additif (écrans détail, semaine, TOODSCORE,
+     TOODMAIL, WARNINGTOOD, swipe). N'écrase rien du cœur.
+     ============================================================ */
+  .t2-navbtn{width:40px;height:40px;border:none;background:none;color:var(--text);border-radius:50%;display:grid;place-items:center;cursor:pointer;position:relative;transition:background .15s;flex:0 0 40px;}
+  .t2-navbtn:active{background:rgba(35,39,51,.07);}
+  header .date{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .t2-badge{position:absolute;top:4px;right:3px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--lavande);color:#fff;font:700 10px/16px 'Poppins',sans-serif;text-align:center;}
+
+  /* Icônes dessinées */
+  .t2-ico{display:block;position:relative;}
+  .t2-ico.cal{width:19px;height:19px;}
+  .t2-ico.cal i:nth-child(1){position:absolute;top:2px;left:0;width:19px;height:15px;border:2px solid currentColor;border-radius:4px;}
+  .t2-ico.cal i:nth-child(2){position:absolute;top:6px;left:0;width:19px;height:2px;background:currentColor;}
+  .t2-ico.cal i:nth-child(3){position:absolute;top:-1px;left:4px;width:2px;height:5px;background:currentColor;border-radius:2px;}
+  .t2-ico.cal i:nth-child(4){position:absolute;top:-1px;right:4px;width:2px;height:5px;background:currentColor;border-radius:2px;}
+  .t2-ico.bars{width:18px;height:16px;display:flex;align-items:flex-end;gap:3px;}
+  .t2-ico.bars i{width:4px;background:currentColor;border-radius:2px;}
+  .t2-ico.bars i:nth-child(1){height:8px;} .t2-ico.bars i:nth-child(2){height:15px;} .t2-ico.bars i:nth-child(3){height:11px;}
+  .t2-ico.env{width:19px;height:14px;border:2px solid currentColor;border-radius:3px;}
+  .t2-ico.env::after{content:"";position:absolute;top:1px;left:1px;right:1px;height:9px;border-top:2px solid currentColor;transform-origin:top;transform:scaleY(.7) skewX(0);clip-path:polygon(0 0,50% 70%,100% 0);}
+
+  /* Écran plein (semaine / score / mail) */
+  .t2-screen{position:fixed;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);visibility:hidden;}
+  .t2-screen.open{transform:none;visibility:visible;}
+  .t2-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(14px + env(safe-area-inset-top)) 8px 10px;}
+  .t2-head .t2-title{font-family:'Poppins';font-weight:600;font-size:15px;color:var(--text);}
+  .t2-ibtn{width:44px;height:44px;border:none;background:none;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--text);transition:background .15s;}
+  .t2-ibtn:active{background:rgba(35,39,51,.07);}
+  .t2-back{width:12px;height:12px;border-left:2.6px solid var(--text);border-bottom:2.6px solid var(--text);transform:rotate(45deg);margin-left:4px;}
+  .t2-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px calc(24px + env(safe-area-inset-bottom));}
+  .t2-sub{font-family:'Poppins';font-weight:700;font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+
+  /* Semaine (colonnes) */
+  .t2-week-nav{display:flex;gap:6px;padding:8px 0 2px;}
+  .t2-day-pill{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 3px;border-radius:12px;background:transparent;border:1.5px solid transparent;cursor:pointer;}
+  .t2-day-pill.sel{background:rgba(255,107,90,.1);border-color:rgba(255,107,90,.5);}
+  .t2-day-pill .dw{font:700 8.5px 'Poppins',sans-serif;letter-spacing:.4px;color:var(--muted);}
+  .t2-day-pill .dn{font:700 14px 'Poppins',sans-serif;color:var(--text);}
+  .t2-load{width:18px;height:4px;border-radius:2px;background:#E7DECF;overflow:hidden;}
+  .t2-load i{display:block;height:100%;border-radius:2px;}
+  .t2-cols{display:flex;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:12px 0 8px;}
+  .t2-col{min-width:158px;width:158px;flex:0 0 auto;background:var(--surface2);border:1px solid var(--line);border-radius:16px;padding:10px 10px 12px;}
+  .t2-col.today{border:2px solid var(--accent);}
+  .t2-col-h{display:flex;align-items:center;gap:9px;}
+  .t2-daybadge{width:40px;height:40px;flex:0 0 40px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid var(--line);}
+  .t2-daybadge.today{background:var(--text);border:none;}
+  .t2-daybadge .dw{font:700 8.5px 'Poppins',sans-serif;color:var(--muted);}
+  .t2-daybadge.today .dw{color:rgba(255,255,255,.72);}
+  .t2-daybadge .dn{font:700 15px 'Poppins',sans-serif;color:var(--text);line-height:1;}
+  .t2-daybadge.today .dn{color:#fff;}
+  .t2-col-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 9px;margin-top:7px;display:flex;gap:7px;align-items:flex-start;cursor:pointer;}
+  .t2-col-card .tt{font-size:12.5px;line-height:1.3;color:var(--text);}
+  .t2-col-card .mt{font-size:11px;color:var(--muted);margin-top:2px;}
+  .t2-free{border:1.5px dashed #E4DBCB;border-radius:10px;min-height:56px;display:flex;align-items:center;justify-content:center;color:#B3AB9D;font-size:12px;margin-top:7px;}
+
+  /* TOODSCORE */
+  .t2-score-hero{position:relative;padding:14px 10px 6px;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;}
+  .t2-score-word{display:flex;gap:1px;font:700 15px 'Poppins',sans-serif;letter-spacing:.5px;margin-bottom:14px;}
+  .t2-medal{width:142px;height:142px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 32px rgba(255,107,90,.28);}
+  .t2-medal .in{width:114px;height:114px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .t2-medal .num{font:700 46px 'Poppins',sans-serif;line-height:.9;color:var(--accent);}
+  .t2-medal .u{font:700 9px 'Poppins',sans-serif;letter-spacing:1.4px;color:var(--muted);margin-top:4px;}
+  .t2-pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 14px;font:600 12.5px 'Poppins',sans-serif;}
+  .t2-chart{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 14px 12px;margin-top:14px;}
+  .t2-chart .row{height:140px;display:flex;align-items:flex-end;gap:8px;}
+  .t2-bar-col{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;}
+  .t2-bar-col .v{font:700 11px 'Poppins',sans-serif;color:var(--text);}
+  .t2-bar-col .b{width:100%;min-height:6px;border-radius:7px 7px 4px 4px;}
+  .t2-bar-col .d{font-size:11px;font-weight:600;}
+  .t2-stat{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;}
+  .t2-stat .k{font-size:11.5px;color:var(--muted);}
+  .t2-stat .val{font:700 17px 'Poppins',sans-serif;margin-top:3px;color:var(--text);}
+  .t2-share{width:100%;height:52px;margin-top:22px;border:none;border-radius:15px;background:var(--accent);color:#fff;font:700 15px 'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 8px 22px rgba(255,107,90,.36);cursor:pointer;}
+  .t2-share:active{background:var(--accent-press);}
+
+  /* TOODMAIL */
+  .t2-mailcard{background:linear-gradient(180deg,rgba(139,147,255,.12),rgba(139,147,255,.05));border:1px solid rgba(139,147,255,.28);border-radius:16px;padding:14px 15px;}
+  .t2-mailtag{font:700 9px 'Poppins',sans-serif;letter-spacing:.8px;color:#5A63D8;background:rgba(139,147,255,.18);padding:3px 7px;border-radius:6px;}
+  .t2-quote{font-size:13px;line-height:1.5;color:#6E675C;margin-top:8px;font-style:italic;border-left:2px solid rgba(139,147,255,.4);padding-left:10px;}
+  .t2-when{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:#fff;border:1.5px dashed rgba(139,147,255,.55);border-radius:14px;padding:9px 10px;min-height:60px;text-align:left;cursor:pointer;}
+  .t2-when.ok{border-style:solid;border-color:var(--lavande);background:rgba(139,147,255,.1);}
+  .t2-when .lab{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;}
+  .t2-when .st{align-self:flex-start;font:700 8.5px 'Poppins',sans-serif;letter-spacing:.6px;color:var(--muted);background:var(--surface2);padding:2.5px 6px;border-radius:5px;margin-top:4px;white-space:nowrap;}
+  .t2-when.ok .st{color:#5A63D8;background:rgba(139,147,255,.16);}
+  .t2-ck{width:20px;height:20px;border-radius:50%;background:var(--lavande);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .18s;}
+  .t2-when.ok .t2-ck{opacity:1;}
+  .t2-ck i{width:7px;height:3.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);margin-top:-2px;}
+
+  /* Feuille détail (2b) + confirmations */
+  .t2-wrap{position:fixed;inset:0;z-index:70;visibility:hidden;}
+  .t2-wrap.open{visibility:visible;}
+  .t2-scrim{position:absolute;inset:0;background:rgba(35,39,51,.5);opacity:0;transition:opacity .3s;}
+  .t2-wrap.open .t2-scrim{opacity:1;}
+  .t2-sheet{position:absolute;left:0;right:0;bottom:0;max-height:94%;background:var(--bg);border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform .34s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;}
+  .t2-wrap.open .t2-sheet{transform:none;}
+  .t2-grab{width:40px;height:4px;border-radius:999px;background:#E0D8C9;margin:10px auto 4px;}
+  .t2-sheet-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 6px;}
+  .t2-sheet-b{overflow-y:auto;padding:6px 18px 14px;}
+  .t2-sheet-f{padding:12px 18px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #EFE8DB;}
+  .t2-label{font:700 11px 'Poppins',sans-serif;letter-spacing:1.5px;color:var(--muted);margin:16px 2px 7px;}
+  .t2-label:first-child{margin-top:2px;}
+  .t2-input{width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 15px;font:600 18px 'Poppins',sans-serif;color:var(--text);}
+  .t2-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,107,90,.14);}
+  .t2-ta{width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 15px;font:15px/1.5 system-ui,sans-serif;color:var(--text);resize:none;}
+  .t2-ta:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,107,90,.14);}
+  .t2-when2{flex:1;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 13px;min-height:52px;text-align:left;cursor:pointer;}
+  .t2-when2 .v{font-size:14.5px;font-weight:600;color:var(--text);white-space:nowrap;}
+  .t2-when2 .s{font-size:11.5px;color:var(--muted);}
+  .t2-primary{width:100%;height:54px;border:none;border-radius:16px;color:#fff;font:700 16px 'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:filter .15s,background .2s;}
+  .t2-primary:active{filter:brightness(.96);}
+  .t2-ok{background:var(--ok);box-shadow:0 8px 22px rgba(79,197,154,.42);}
+  .t2-coral{background:var(--accent);box-shadow:0 8px 22px rgba(255,107,90,.4);}
+  .t2-ghost{width:100%;height:48px;margin-top:8px;border:none;border-radius:14px;background:transparent;font:600 14px system-ui;color:var(--muted);cursor:pointer;}
+  .t2-ghost:active{background:rgba(35,39,51,.05);}
+  .t2-ghost.danger{color:var(--danger);}
+  .t2-ghost.danger:active{background:rgba(229,72,77,.08);}
+  .t2-srcstrip{display:flex;align-items:center;gap:9px;}
+  .t2-tag{font:700 9px 'Poppins',sans-serif;letter-spacing:.8px;padding:3px 7px;border-radius:6px;}
+  .t2-row2{display:flex;gap:9px;}
+  .t2-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:16px;}
+  .t2-toggle .tt{font:600 14px system-ui;color:var(--text);}
+  .t2-toggle .ts{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .t2-switch{width:46px;height:28px;border-radius:999px;background:#E0D8C9;position:relative;flex:0 0 46px;cursor:pointer;transition:background .2s;border:none;}
+  .t2-switch.on{background:var(--urgent);}
+  .t2-switch i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .t2-switch.on i{left:21px;}
+
+  /* Confirmation suppression */
+  .t2-confirm{position:absolute;inset:0;background:rgba(35,39,51,.5);display:none;align-items:flex-end;z-index:5;}
+  .t2-confirm.open{display:flex;}
+  .t2-confirm .box{width:100%;background:#fff;border-radius:24px 24px 0 0;padding:12px 22px calc(26px + env(safe-area-inset-bottom));}
+
+  /* WARNINGTOOD (modale d'alerte) */
+  .t2-warn{position:fixed;inset:0;z-index:80;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s;visibility:hidden;}
+  .t2-warn.open{transform:none;visibility:visible;}
+  .t2-warn-band{margin:2px 14px 0;background:rgba(245,130,13,.12);border:1px solid rgba(245,130,13,.3);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:9px;font:600 12.5px system-ui;color:#C96A00;}
+  .t2-warn-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 26px;}
+  .t2-warn-disc{width:132px;height:132px;border-radius:50%;background:radial-gradient(circle at 50% 42%,rgba(245,130,13,.26),rgba(245,130,13,.06));display:flex;align-items:center;justify-content:center;animation:pulseWarn 2s ease-out infinite;}
+  .t2-warn-disc .in{width:92px;height:92px;border-radius:50%;background:var(--urgent);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(245,130,13,.44);}
+  .t2-bell{width:28px;height:30px;position:relative;animation:bellRing 2.5s ease-in-out infinite;transform-origin:50% 2px;}
+  .t2-bell i:nth-child(1){position:absolute;top:3px;left:4px;width:20px;height:17px;border:3px solid #fff;border-bottom:0;border-radius:11px 11px 0 0;}
+  .t2-bell i:nth-child(2){position:absolute;bottom:6px;left:1px;width:26px;height:3px;background:#fff;border-radius:2px;}
+  .t2-bell i:nth-child(3){position:absolute;bottom:0;left:10.5px;width:7px;height:7px;border-radius:0 0 6px 6px;background:#fff;}
+  .t2-bell i:nth-child(4){position:absolute;top:-1px;left:11.5px;width:5px;height:5px;border-radius:50%;background:#fff;}
+
+  @keyframes pulseWarn{0%{box-shadow:0 0 0 0 rgba(245,130,13,.42)}70%{box-shadow:0 0 0 18px rgba(245,130,13,0)}100%{box-shadow:0 0 0 0 rgba(245,130,13,0)}}
+  @keyframes bellRing{0%,100%{transform:rotate(0)}12%{transform:rotate(13deg)}28%{transform:rotate(-11deg)}44%{transform:rotate(7deg)}60%{transform:rotate(-4deg)}72%{transform:rotate(0)}}
+
+  /* Swipe */
+  .t2-swipe{position:relative;margin-bottom:8px;border-radius:var(--radius);overflow:hidden;}
+  .t2-swipe .task{margin-bottom:0;touch-action:pan-y;}
+  .t2-swipe-act{position:absolute;top:0;bottom:0;display:flex;align-items:center;font:700 13px 'Poppins',sans-serif;color:#fff;padding:0 18px;}
+  .t2-swipe-act.left{left:0;right:0;background:var(--ok);justify-content:flex-start;}
+  .t2-swipe-act.right{left:0;right:0;background:var(--accent);justify-content:flex-end;}
+
 </style>
 </head>
 <body>
@@ -366,6 +523,550 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2600);
 }
+</script>
+
+<script>
+/* ===================================================================
+   TOOD+ — Module additif. Ne modifie AUCUNE fonction du coeur.
+   Réutilise window.api / window.loadTasks / window.toast / window.complete.
+   Écrans : détail (feuille), semaine, TOODSCORE, TOODMAIL, WARNINGTOOD, swipe.
+   =================================================================== */
+(function () {
+  'use strict';
+  if (window.TOOD2) return;
+
+  /* ---------- helpers ---------- */
+  var LS = window.localStorage;
+  function $(s, r) { return (r || document).querySelector(s); }
+  function el(html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function todayISO() { return new Date().toLocaleDateString('sv-SE'); }
+  function addDaysISO(n) { return new Date(Date.now() + n * 864e5).toLocaleDateString('sv-SE'); }
+  function fmtDate(d) { try { return new Date(d + 'T12:00').toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }); } catch (e) { return d; } }
+  function toast(m) { if (window.toast) window.toast(m); }
+  function jget(k, def) { try { return JSON.parse(LS.getItem(k)) || def; } catch (e) { return def; } }
+  function jset(k, v) { try { LS.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  var T = window.TOOD2 = {
+    tasks: [],
+    cfg: function () { return { url: LS.getItem('apiUrl') || '', token: LS.getItem('apiToken') || '' }; }
+  };
+
+  /* ---------- couche données (GET indépendant, même contrat) ---------- */
+  async function loadData() {
+    var c = T.cfg();
+    if (!c.url || !c.token) return T.tasks;
+    try {
+      var res = await fetch(c.url + '?token=' + encodeURIComponent(c.token) + '&mode=tasks');
+      var data = await res.json();
+      if (data && data.ok) T.tasks = data.tasks || [];
+    } catch (e) {}
+    return T.tasks;
+  }
+  // Toutes les écritures passent par le api() du coeur (POST sans header -> pas de preflight CORS).
+  async function act(body) {
+    if (!window.api) throw new Error('api indisponible');
+    return window.api(body);
+  }
+  function byId(id) { for (var i = 0; i < T.tasks.length; i++) if (T.tasks[i].id === id) return T.tasks[i]; return null; }
+
+  /* ---------- journal de complétion (pour TOODSCORE, 100% local) ---------- */
+  function logDone(id) {
+    var log = jget('tood.doneLog', []);
+    var day = todayISO();
+    // évite doublon même tâche/même jour
+    for (var i = 0; i < log.length; i++) if (log[i].id === id && log[i].d === day) return;
+    log.push({ id: id, d: day, t: Date.now() });
+    // garde 90 jours
+    var cut = Date.now() - 90 * 864e5;
+    log = log.filter(function (e) { return e.t >= cut; });
+    jset('tood.doneLog', log);
+    updateRecord();
+  }
+  function computeScore() {
+    var log = jget('tood.doneLog', []);
+    var byDay = {};
+    log.forEach(function (e) { byDay[e.d] = (byDay[e.d] || 0) + 1; });
+    // série : jours consécutifs avec >=1, en terminant aujourd'hui (ou hier si rien aujourd'hui)
+    var streak = 0, cur = new Date();
+    if (!byDay[todayISO()]) cur = new Date(Date.now() - 864e5); // tolère "pas encore fait aujourd'hui"
+    for (;;) {
+      var iso = cur.toLocaleDateString('sv-SE');
+      if (byDay[iso]) { streak++; cur = new Date(cur.getTime() - 864e5); } else break;
+    }
+    // 7 derniers jours
+    var bars = [], names = ['D', 'L', 'M', 'M', 'J', 'V', 'S'], weekDone = 0, best = 0, bestName = '—';
+    for (var i = 6; i >= 0; i--) {
+      var dt = new Date(Date.now() - i * 864e5);
+      var iso2 = dt.toLocaleDateString('sv-SE');
+      var n = byDay[iso2] || 0; weekDone += n;
+      var lbl = names[dt.getDay()];
+      bars.push({ d: lbl, n: n, today: i === 0 });
+      if (n > best) { best = n; bestName = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'][dt.getDay()]; }
+    }
+    var record = jget('tood.record', 0);
+    return { streak: streak, bars: bars, weekDone: weekDone, best: best, bestName: bestName, record: Math.max(record, streak) };
+  }
+  function updateRecord() { var s = computeScore(); if (s.streak > jget('tood.record', 0)) jset('tood.record', s.streak); }
+
+  /* ---------- sets locaux (repli si le backend n'a pas encore les champs) ---------- */
+  function urgentSet() { return jget('tood.urgent', {}); }
+  function isUrgent(id) { var t = byId(id); return (t && t.urgent) || !!urgentSet()[id]; }
+  function setUrgent(id, on) {
+    var s = urgentSet(); if (on) s[id] = 1; else delete s[id]; jset('tood.urgent', s);
+    act({ action: 'updateTask', id: id, urgent: on ? 1 : 0 }).catch(function () {});
+    applyUrgent();
+  }
+  function confirmedSet() { return jget('tood.mailConfirmed', {}); }
+  function mailQueue() {
+    var conf = confirmedSet();
+    return T.tasks.filter(function (t) { return t.source === 'MAIL' && !conf[t.id] && !t.confirmed; });
+  }
+
+  /* =================================================================
+     INJECTION DOM
+     ================================================================= */
+  function injectHeaderButtons() {
+    var header = $('header'); if (!header) return;
+    var ref = $('#refresh', header);
+    var week = el('<button class="t2-navbtn" id="t2-b-week" title="Semaine" aria-label="Semaine"><span class="t2-ico cal"><i></i><i></i><i></i><i></i></span></button>');
+    var score = el('<button class="t2-navbtn" id="t2-b-score" title="TOODSCORE" aria-label="TOODSCORE"><span class="t2-ico bars"><i></i><i></i><i></i></span></button>');
+    var mail = el('<button class="t2-navbtn" id="t2-b-mail" title="À confirmer" aria-label="Mails à confirmer" style="display:none"><span class="t2-ico env"></span><span class="t2-badge">0</span></button>');
+    header.insertBefore(week, ref); header.insertBefore(score, ref); header.insertBefore(mail, ref);
+    week.onclick = openWeek; score.onclick = openScore; mail.onclick = openMail;
+  }
+
+  function injectShells() {
+    var root = el('<div id="t2-root"></div>');
+    document.body.appendChild(root);
+
+    // ---- Feuille détail (2b)
+    root.appendChild(el(
+      '<div class="t2-wrap" id="t2-detail">' +
+        '<div class="t2-scrim" data-close></div>' +
+        '<div class="t2-sheet">' +
+          '<div class="t2-grab"></div>' +
+          '<div class="t2-sheet-h">' +
+            '<div class="t2-srcstrip" id="t2-d-src"></div>' +
+            '<button class="t2-ibtn" id="t2-d-del" aria-label="Supprimer"><span style="width:16px;height:17px;position:relative;display:block"><i style="position:absolute;top:3px;left:1px;right:1px;height:13px;border:2px solid #8D867A;border-top:0;border-radius:0 0 4px 4px"></i><i style="position:absolute;top:2px;left:-1px;right:-1px;height:2.2px;background:#8D867A;border-radius:2px"></i><i style="position:absolute;top:-1px;left:5px;width:6px;height:3px;border:2px solid #8D867A;border-bottom:0;border-radius:3px 3px 0 0"></i></span></button>' +
+          '</div>' +
+          '<div class="t2-sheet-b">' +
+            '<div class="t2-label">TITRE</div>' +
+            '<input class="t2-input" id="t2-d-titre">' +
+            '<div class="t2-label">QUAND</div>' +
+            '<div class="t2-row2">' +
+              '<button class="t2-when2" id="t2-d-date"><span style="width:18px;height:18px;position:relative;display:block;flex:0 0 18px"><i style="position:absolute;top:2px;left:0;width:18px;height:15px;border:2px solid #FF6B5A;border-radius:4px"></i><i style="position:absolute;top:6px;left:0;width:18px;height:2px;background:#FF6B5A"></i><i style="position:absolute;top:-1px;left:4px;width:2px;height:5px;background:#FF6B5A;border-radius:2px"></i><i style="position:absolute;top:-1px;right:4px;width:2px;height:5px;background:#FF6B5A;border-radius:2px"></i></span><span style="display:flex;flex-direction:column;line-height:1.25"><span class="v" id="t2-d-datev">—</span><span class="s">date</span></span></button>' +
+              '<button class="t2-when2" id="t2-d-time"><span style="width:18px;height:18px;border:2px solid #FF6B5A;border-radius:50%;position:relative;display:block;flex:0 0 18px"><i style="position:absolute;left:50%;top:50%;width:2px;height:5px;background:#FF6B5A;transform:translate(-50%,-92%);border-radius:2px"></i><i style="position:absolute;left:50%;top:50%;width:5px;height:2px;background:#FF6B5A;transform:translateY(-50%);border-radius:2px"></i></span><span style="display:flex;flex-direction:column;line-height:1.25"><span class="v" id="t2-d-timev">—</span><span class="s">heure</span></span></button>' +
+            '</div>' +
+            '<div class="t2-label">NOTE</div>' +
+            '<textarea class="t2-ta" id="t2-d-note" rows="3"></textarea>' +
+            '<div class="t2-toggle">' +
+              '<div><div class="tt">Très urgent (WARNINGTOOD)</div><div class="ts">Rappel chaque heure jusqu\'à ce que ce soit fait</div></div>' +
+              '<button class="t2-switch" id="t2-d-urgent" aria-label="Marquer urgent"><i></i></button>' +
+            '</div>' +
+            '<input type="date" id="t2-d-pdate" hidden><input type="time" id="t2-d-ptime" hidden>' +
+          '</div>' +
+          '<div class="t2-sheet-f">' +
+            '<button class="t2-primary t2-ok" id="t2-d-done"><span style="display:flex;width:22px;height:22px;align-items:center;justify-content:center"><i style="width:13px;height:6.5px;border-left:2.8px solid #fff;border-bottom:2.8px solid #fff;transform:rotate(-45deg);display:block;margin-top:-3px"></i></span><span id="t2-d-donel">Terminer</span></button>' +
+            '<button class="t2-ghost" id="t2-d-save" style="display:none;color:#E4523F">Enregistrer les modifications</button>' +
+            '<button class="t2-ghost danger" id="t2-d-del2">Supprimer la tâche</button>' +
+          '</div>' +
+          '<div class="t2-confirm" id="t2-d-confirm"><div class="box">' +
+            '<div class="t2-grab"></div>' +
+            '<div style="width:54px;height:54px;border-radius:50%;background:rgba(229,72,77,.12);display:flex;align-items:center;justify-content:center;margin:6px auto 0"><span style="width:22px;height:23px;position:relative;display:block"><i style="position:absolute;top:4px;left:1px;right:1px;height:18px;border:2.4px solid #E5484D;border-top:0;border-radius:0 0 5px 5px"></i><i style="position:absolute;top:3px;left:-1px;right:-1px;height:2.6px;background:#E5484D;border-radius:2px"></i><i style="position:absolute;top:-1px;left:7px;width:8px;height:4px;border:2.4px solid #E5484D;border-bottom:0;border-radius:3px 3px 0 0"></i></span></div>' +
+            '<div style="text-align:center;font:700 18px \'Poppins\',sans-serif;color:#232733;margin-top:14px">Supprimer cette tâche ?</div>' +
+            '<div id="t2-d-cf-txt" style="text-align:center;font-size:13px;line-height:1.5;color:#8D867A;margin-top:6px"></div>' +
+            '<div style="display:flex;gap:10px;margin-top:20px">' +
+              '<button class="t2-primary" style="background:#F3ECE1;color:#232733;box-shadow:none;height:50px" id="t2-d-cf-no">Annuler</button>' +
+              '<button class="t2-primary" style="background:#E5484D;box-shadow:none;height:50px" id="t2-d-cf-yes">Supprimer</button>' +
+            '</div>' +
+          '</div></div>' +
+        '</div>' +
+      '</div>'
+    ));
+
+    // ---- Semaine
+    root.appendChild(el(
+      '<div class="t2-screen" id="t2-week">' +
+        '<div class="t2-head"><button class="t2-ibtn" data-close><span class="t2-back"></span></button><span class="t2-title">Semaine</span><span style="width:44px"></span></div>' +
+        '<div style="padding:0 16px"><div class="t2-sub">SEMAINE</div><div id="t2-week-range" style="font:700 24px \'Poppins\',sans-serif;color:#232733;margin-top:2px"></div><div id="t2-week-total" style="font-size:12.5px;color:#8D867A;margin-top:3px"></div><div class="t2-week-nav" id="t2-week-nav"></div></div>' +
+        '<div class="t2-body" style="padding-top:0"><div class="t2-cols" id="t2-week-cols"></div></div>' +
+      '</div>'
+    ));
+
+    // ---- TOODSCORE
+    root.appendChild(el(
+      '<div class="t2-screen" id="t2-score">' +
+        '<div class="t2-head"><button class="t2-ibtn" data-close><span class="t2-back"></span></button><span class="t2-title" style="display:flex;gap:1px"><span style="color:#232733">TOOD</span><span style="color:#FF6B5A">SCORE</span></span><span style="width:44px"></span></div>' +
+        '<div class="t2-body" id="t2-score-body"></div>' +
+      '</div>'
+    ));
+
+    // ---- TOODMAIL
+    root.appendChild(el(
+      '<div class="t2-screen" id="t2-mail">' +
+        '<div class="t2-head"><button class="t2-ibtn" data-close><span class="t2-back"></span></button><span class="t2-title">Depuis tes mails</span><span id="t2-mail-count" style="font:700 11.5px \'Poppins\',sans-serif;color:#5A63D8;background:rgba(139,147,255,.16);padding:5px 10px;border-radius:999px">0</span></div>' +
+        '<div class="t2-body" id="t2-mail-body"></div>' +
+      '</div>'
+    ));
+
+    // ---- WARNINGTOOD (alerte)
+    root.appendChild(el(
+      '<div class="t2-warn" id="t2-warn">' +
+        '<div class="t2-head"><button class="t2-ibtn" data-close><span class="t2-back"></span></button><span class="t2-title">TOOD urgent</span><span style="width:44px"></span></div>' +
+        '<div class="t2-warn-band"><span style="width:16px;height:16px;border:2.2px solid #F5820D;border-radius:50%;position:relative;display:block;flex:0 0 16px"><i style="position:absolute;left:50%;top:50%;width:1.8px;height:4.5px;background:#F5820D;transform:translate(-50%,-90%);border-radius:2px"></i><i style="position:absolute;left:50%;top:50%;width:4px;height:1.8px;background:#F5820D;transform:translateY(-50%);border-radius:2px"></i></span><span>Rappel automatique chaque heure jusqu\'à ce que ce soit fait.</span></div>' +
+        '<div class="t2-warn-body">' +
+          '<div class="t2-warn-disc"><div class="in"><span class="t2-bell"><i></i><i></i><i></i><i></i></span></div></div>' +
+          '<div style="font:700 11px \'Poppins\',sans-serif;letter-spacing:2px;color:#C96A00;margin-top:20px">TRÈS URGENT</div>' +
+          '<div id="t2-warn-title" style="font:700 24px \'Poppins\',sans-serif;color:#232733;margin-top:8px"></div>' +
+          '<div id="t2-warn-sub" style="font-size:13px;color:#8D867A;margin-top:8px"></div>' +
+        '</div>' +
+        '<div class="t2-sheet-f" style="border-top:1px solid #EFE8DB">' +
+          '<button class="t2-primary t2-ok" id="t2-warn-done"><span style="display:flex;width:22px;height:22px;align-items:center;justify-content:center"><i style="width:13px;height:6.5px;border-left:2.8px solid #fff;border-bottom:2.8px solid #fff;transform:rotate(-45deg);display:block;margin-top:-3px"></i></span>Terminer maintenant</button>' +
+          '<div class="t2-row2" style="margin-top:9px"><button class="t2-primary" id="t2-warn-snooze" style="background:rgba(245,130,13,.1);color:#C96A00;box-shadow:none;height:48px;border:1.5px solid rgba(245,130,13,.4)">Repousser 1 h</button><button class="t2-primary" id="t2-warn-mute" style="background:#fff;color:#8D867A;box-shadow:none;height:48px;border:1.5px solid var(--line)">Couper les rappels</button></div>' +
+        '</div>' +
+      '</div>'
+    ));
+
+    // fermeture générique
+    root.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', closeAll); });
+  }
+
+  /* =================================================================
+     ROUTAGE
+     ================================================================= */
+  function lock(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+  function closeAll() {
+    ['t2-week', 't2-score', 't2-mail'].forEach(function (id) { var e = $('#' + id); if (e) e.classList.remove('open'); });
+    var d = $('#t2-detail'); if (d) d.classList.remove('open');
+    var w = $('#t2-warn'); if (w) w.classList.remove('open');
+    lock(false);
+  }
+  async function openWeek() { lock(true); await loadData(); renderWeek(); $('#t2-week').classList.add('open'); }
+  async function openScore() { lock(true); renderScore(); $('#t2-score').classList.add('open'); }
+  async function openMail() { lock(true); await loadData(); renderMail(); $('#t2-mail').classList.add('open'); }
+
+  /* =================================================================
+     DÉTAIL (feuille 2b)
+     ================================================================= */
+  var curId = null, dirty = false, dDate = '', dTime = '';
+  async function openDetail(id) {
+    if (!byId(id)) await loadData();
+    var t = byId(id) || { id: id, titre: '', date: '', heure: '', source: 'MANUEL', note: '' };
+    curId = id; dirty = false; dDate = t.date || ''; dTime = t.heure || '';
+    // source strip
+    var srcMap = {
+      PHOTO: { dot: '#F5B84D', label: 'Extrait d\u2019une photo', tag: 'PHOTO', bg: 'rgba(245,184,77,.2)', col: '#A87312' },
+      MAIL: { dot: '#8B93FF', label: 'Reçue par mail', tag: 'MAIL', bg: 'rgba(139,147,255,.16)', col: '#5A63D8' },
+      MANUEL: { dot: '#C9C1B2', label: 'Ajoutée à la main', tag: '', bg: '', col: '' }
+    };
+    var sm = srcMap[t.source] || srcMap.MANUEL;
+    $('#t2-d-src').innerHTML = '<span style="width:9px;height:9px;border-radius:50%;background:' + sm.dot + ';display:block"></span><span style="font-size:12.5px;color:#8D867A">' + sm.label + '</span>' + (sm.tag ? '<span class="t2-tag" style="color:' + sm.col + ';background:' + sm.bg + '">' + sm.tag + '</span>' : '');
+    $('#t2-d-titre').value = t.titre || '';
+    $('#t2-d-note').value = t.note || '';
+    refreshWhen();
+    // urgent
+    $('#t2-d-urgent').classList.toggle('on', isUrgent(id));
+    $('#t2-d-save').style.display = 'none';
+    $('#t2-d-confirm').classList.remove('open');
+    $('#t2-detail').classList.add('open'); lock(true);
+  }
+  function refreshWhen() {
+    $('#t2-d-datev').textContent = dDate ? fmtDate(dDate) : 'Ajouter';
+    $('#t2-d-timev').textContent = dTime ? dTime : 'Ajouter';
+  }
+  function markDirty() { dirty = true; $('#t2-d-save').style.display = 'block'; }
+  function closeDetail() { $('#t2-detail').classList.remove('open'); lock(false); curId = null; }
+
+  function wireDetail() {
+    $('#t2-d-titre').addEventListener('input', markDirty);
+    $('#t2-d-note').addEventListener('input', markDirty);
+    var pd = $('#t2-d-pdate'), pt = $('#t2-d-ptime');
+    $('#t2-d-date').onclick = function () { try { pd.showPicker ? pd.showPicker() : pd.click(); } catch (e) { pd.click(); } };
+    $('#t2-d-time').onclick = function () { try { pt.showPicker ? pt.showPicker() : pt.click(); } catch (e) { pt.click(); } };
+    pd.onchange = function (e) { dDate = e.target.value; refreshWhen(); markDirty(); };
+    pt.onchange = function (e) { dTime = e.target.value; refreshWhen(); markDirty(); };
+    $('#t2-d-urgent').onclick = function () { var on = !this.classList.contains('on'); this.classList.toggle('on', on); setUrgent(curId, on); };
+    $('#t2-detail .t2-scrim').addEventListener('click', closeDetail);
+
+    $('#t2-d-done').onclick = async function () {
+      try { await act({ action: 'completeTask', id: curId }); logDone(curId); toast('Bien joué \u2726'); if (window.loadTasks) window.loadTasks(); closeDetail(); }
+      catch (e) { toast('Échec — réessaie'); }
+    };
+    $('#t2-d-save').onclick = async function () {
+      var body = { action: 'updateTask', id: curId, titre: $('#t2-d-titre').value.trim(), date: dDate, heure: dTime, note: $('#t2-d-note').value };
+      try { await act(body); dirty = false; this.style.display = 'none'; toast('Modifs enregistrées'); if (window.loadTasks) window.loadTasks(); }
+      catch (e) { toast('« updateTask » à ajouter côté serveur'); }
+    };
+    function askDel() { $('#t2-d-cf-txt').innerHTML = '« ' + esc($('#t2-d-titre').value || 'Cette tâche') + ' » sera retirée définitivement.'; $('#t2-d-confirm').classList.add('open'); }
+    $('#t2-d-del').onclick = askDel; $('#t2-d-del2').onclick = askDel;
+    $('#t2-d-cf-no').onclick = function () { $('#t2-d-confirm').classList.remove('open'); };
+    $('#t2-d-cf-yes').onclick = async function () {
+      try { await act({ action: 'deleteTask', id: curId }); toast('Supprimé'); if (window.loadTasks) window.loadTasks(); closeDetail(); }
+      catch (e) { $('#t2-d-confirm').classList.remove('open'); toast('« deleteTask » à ajouter côté serveur'); }
+    };
+  }
+
+  /* =================================================================
+     SEMAINE
+     ================================================================= */
+  var weekSel = 0;
+  function buildWeek() {
+    var conf = confirmedSet();
+    var days = [];
+    for (var i = 0; i < 7; i++) {
+      var dt = new Date(Date.now() + i * 864e5);
+      var iso = dt.toLocaleDateString('sv-SE');
+      var items = T.tasks.filter(function (t) { return t.date === iso; }).sort(function (a, b) { return (a.heure || '').localeCompare(b.heure || ''); });
+      days.push({ iso: iso, dow: ['DIM','LUN','MAR','MER','JEU','VEN','SAM'][dt.getDay()], dom: dt.getDate(), items: items, today: i === 0, dem: i === 1 });
+    }
+    return days;
+  }
+  function dotFor(s) { return s === 'PHOTO' ? '#F5B84D' : (s === 'MAIL' ? '#8B93FF' : '#C9C1B2'); }
+  function renderWeek() {
+    var days = buildWeek();
+    var total = 0; days.forEach(function (d) { total += d.items.length; });
+    $('#t2-week-range').textContent = days[0].dom + ' \u2013 ' + days[6].dom + ' ' + new Date(days[6].iso + 'T12:00').toLocaleDateString('fr-FR', { month: 'short' });
+    $('#t2-week-total').textContent = total + (total > 1 ? ' tâches cette semaine' : ' tâche cette semaine');
+    // nav
+    var nav = $('#t2-week-nav'); nav.innerHTML = '';
+    days.forEach(function (d, i) {
+      var pct = Math.round(Math.min(d.items.length / 4, 1) * 100);
+      var fill = d.items.length === 0 ? 'transparent' : (d.today ? '#FF6B5A' : '#C3B39B');
+      var p = el('<button class="t2-day-pill' + (i === weekSel ? ' sel' : '') + '"><span class="dw">' + d.dow + '</span><span class="dn">' + d.dom + '</span><span class="t2-load"><i style="width:' + pct + '%;background:' + fill + '"></i></span></button>');
+      p.onclick = function () { weekSel = i; renderWeek(); };
+      nav.appendChild(p);
+    });
+    // colonnes
+    var cols = $('#t2-week-cols'); cols.innerHTML = '';
+    days.forEach(function (d, i) {
+      var pct = Math.round(Math.min(d.items.length / 4, 1) * 100);
+      var fill = d.items.length === 0 ? 'transparent' : (d.today ? '#FF6B5A' : '#C3B39B');
+      var col = el('<div class="t2-col' + (d.today ? ' today' : '') + (i === weekSel ? '' : '') + '" style="' + (i === weekSel ? 'border:2px solid #FF6B5A' : '') + '"></div>');
+      var label = d.today ? "Aujourd'hui" : (d.dem ? 'Demain' : d.items.length + (d.items.length > 1 ? ' tâches' : ' tâche'));
+      col.appendChild(el('<div class="t2-col-h"><div class="t2-daybadge' + (d.today ? ' today' : '') + '"><span class="dw">' + d.dow + '</span><span class="dn">' + d.dom + '</span></div><div style="min-width:0"><div style="font-size:12px;font-weight:600;color:#232733">' + label + '</div><div class="t2-load" style="width:52px;height:5px;margin-top:4px"><i style="width:' + pct + '%;background:' + fill + '"></i></div></div></div>'));
+      if (d.items.length === 0) {
+        col.appendChild(el('<div class="t2-free">Libre \u2726</div>'));
+      } else {
+        d.items.forEach(function (t) {
+          var c = el('<div class="t2-col-card"><span style="width:7px;height:7px;border-radius:50%;background:' + dotFor(t.source) + ';flex:0 0 7px;margin-top:5px"></span><div style="min-width:0"><div class="tt">' + esc(t.titre) + '</div>' + (t.heure ? '<div class="mt">' + t.heure + '</div>' : '') + '</div></div>');
+          c.onclick = function () { openDetail(t.id); };
+          col.appendChild(c);
+        });
+      }
+      cols.appendChild(col);
+    });
+  }
+
+  /* =================================================================
+     TOODSCORE
+     ================================================================= */
+  function renderScore() {
+    var s = computeScore();
+    var deg = 240; // anneau décoratif
+    var bars = s.bars.map(function (b) {
+      var h = Math.round(Math.min(b.n / Math.max(5, s.best || 1), 1) * 100);
+      var fill = b.today ? '#FF6B5A' : '#4FC59A';
+      var lc = b.today ? '#E4523F' : '#8D867A';
+      return '<div class="t2-bar-col"><span class="v">' + b.n + '</span><div style="width:100%;flex:1;display:flex;align-items:flex-end"><div class="b" style="height:' + h + '%;background:' + fill + '"></div></div><span class="d" style="color:' + lc + '">' + b.d + '</span></div>';
+    }).join('');
+    $('#t2-score-body').innerHTML =
+      '<div class="t2-score-hero">' +
+        '<div class="t2-medal" style="background:conic-gradient(#FF6B5A 0deg ' + deg + 'deg, rgba(255,107,90,.15) ' + deg + 'deg 360deg)"><div class="in"><span class="num">' + s.streak + '</span><span class="u">JOURS DE SÉRIE</span></div></div>' +
+        '<div class="t2-pill" style="background:rgba(255,107,90,.12);border:1px solid rgba(255,107,90,.34);color:#E4523F;margin-top:16px"><span style="width:7px;height:7px;border-radius:50%;background:#FF6B5A"></span>' + (s.streak > 0 ? 'Série active · record ' + s.record : 'Lance ta série aujourd\u2019hui') + '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:baseline;justify-content:space-between;margin:18px 2px 0"><span class="t2-sub">CETTE SEMAINE</span><span style="font-size:12.5px;color:#8D867A"><b style="font-family:\'Poppins\';color:#232733">' + s.weekDone + '</b> faites</span></div>' +
+      '<div class="t2-chart"><div class="row">' + bars + '</div></div>' +
+      '<div class="t2-row2" style="margin-top:14px"><div class="t2-stat"><div class="k">Meilleur jour</div><div class="val">' + s.bestName + '</div></div><div class="t2-stat"><div class="k">Record</div><div class="val" style="color:#2E9B77">' + s.record + ' j</div></div></div>' +
+      '<button class="t2-share" id="t2-score-share"><span style="width:15px;height:15px;position:relative;display:block"><i style="position:absolute;top:1px;left:2.5px;width:9px;height:9px;border-top:2.6px solid #fff;border-left:2.6px solid #fff;transform:rotate(45deg)"></i><i style="position:absolute;top:2px;left:5.7px;width:2.6px;height:11px;background:#fff;border-radius:2px"></i></span>Partager mon TOODSCORE</button>';
+    $('#t2-score-share').onclick = function () {
+      var txt = 'Mon TOODSCORE : ' + s.streak + ' jours de série \u2726 (' + s.weekDone + ' tâches cette semaine)';
+      if (navigator.share) navigator.share({ text: txt }).catch(function () {}); else toast(txt);
+    };
+  }
+
+  /* =================================================================
+     TOODMAIL
+     ================================================================= */
+  var mailDate = false, mailTime = false;
+  function refreshMailBadge() {
+    var n = mailQueue().length, b = $('#t2-b-mail');
+    if (!b) return;
+    if (n > 0) { b.style.display = ''; b.querySelector('.t2-badge').textContent = n; }
+    else b.style.display = 'none';
+  }
+  function renderMail() {
+    var q = mailQueue();
+    $('#t2-mail-count').textContent = q.length ? ('1 / ' + q.length) : '0';
+    var body = $('#t2-mail-body');
+    if (!q.length) {
+      body.innerHTML = '<div class="empty" style="margin-top:80px">Rien à confirmer \u2726<div style="font-size:13px;margin-top:6px">Les tâches venues de tes mails atterrissent ici avant d\u2019entrer dans TOOD.</div></div>';
+      return;
+    }
+    var t = q[0]; mailDate = false; mailTime = false;
+    body.innerHTML =
+      '<div class="t2-mailcard">' +
+        '<div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:#8B93FF"></span><span class="t2-mailtag">GMAIL</span><span style="font-size:11.5px;color:#8D867A;margin-left:auto">à confirmer</span></div>' +
+        '<div style="font-size:12.5px;color:#8D867A;margin-top:11px">Depuis un mail</div>' +
+        '<div style="font:600 15px \'Poppins\';color:#232733;margin-top:3px">' + esc(t.titre) + '</div>' +
+        (t.note ? '<div class="t2-quote">« ' + esc(t.note) + ' »</div>' : '') +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin:20px 2px 12px"><span class="t2-sub" style="white-space:nowrap">RÉEL TOOD ?</span><span style="flex:1;height:1px;background:#E9E1D4"></span></div>' +
+      '<div style="font-size:12.5px;line-height:1.5;color:#8D867A;margin:0 2px 12px">Vérifie la date et l\u2019heure lues dans le mail, puis ajoute — ou écarte.</div>' +
+      '<div class="t2-sub" style="margin:0 2px 8px">DÉTECTÉ DANS LE MAIL</div>' +
+      '<div class="t2-row2">' +
+        '<button class="t2-when" id="t2-m-date"><span style="width:18px;height:18px;position:relative;display:block;flex:0 0 18px"><i style="position:absolute;top:2px;left:0;width:18px;height:15px;border:2px solid #8B93FF;border-radius:4px"></i><i style="position:absolute;top:6px;left:0;width:18px;height:2px;background:#8B93FF"></i><i style="position:absolute;top:-1px;left:4px;width:2px;height:5px;background:#8B93FF;border-radius:2px"></i><i style="position:absolute;top:-1px;right:4px;width:2px;height:5px;background:#8B93FF;border-radius:2px"></i></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><span class="lab">' + (t.date ? fmtDate(t.date) : 'Pas de date') + '</span><span class="st">À valider</span></span><span class="t2-ck"><i></i></span></button>' +
+        '<button class="t2-when" id="t2-m-time"><span style="width:18px;height:18px;border:2px solid #8B93FF;border-radius:50%;position:relative;display:block;flex:0 0 18px"><i style="position:absolute;left:50%;top:50%;width:2px;height:5px;background:#8B93FF;transform:translate(-50%,-92%);border-radius:2px"></i><i style="position:absolute;left:50%;top:50%;width:5px;height:2px;background:#8B93FF;transform:translateY(-50%);border-radius:2px"></i></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><span class="lab">' + (t.heure || 'Pas d\u2019heure') + '</span><span class="st">À valider</span></span><span class="t2-ck"><i></i></span></button>' +
+      '</div>' +
+      '<div style="font-size:11.5px;color:#8D867A;margin:9px 2px 0">Tape un champ pour confirmer ce que TOOD a lu.</div>' +
+      '<div style="height:16px"></div>' +
+      '<button class="t2-primary t2-coral" id="t2-m-add"><span style="display:flex;width:22px;height:22px;align-items:center;justify-content:center"><i style="width:12px;height:6px;border-left:2.8px solid #fff;border-bottom:2.8px solid #fff;transform:rotate(-45deg);display:block;margin-top:-3px"></i></span>Oui, ajouter le TOOD</button>' +
+      '<button class="t2-ghost" id="t2-m-skip">Ce n\u2019est pas une tâche</button>';
+    $('#t2-m-date').onclick = function () { mailDate = !mailDate; this.classList.toggle('ok', mailDate); this.querySelector('.st').textContent = mailDate ? 'Validé' : 'À valider'; };
+    $('#t2-m-time').onclick = function () { mailTime = !mailTime; this.classList.toggle('ok', mailTime); this.querySelector('.st').textContent = mailTime ? 'Validé' : 'À valider'; };
+    $('#t2-m-add').onclick = async function () {
+      var conf = confirmedSet(); conf[t.id] = 1; jset('tood.mailConfirmed', conf);
+      try { await act({ action: 'updateTask', id: t.id, confirmed: 1 }); } catch (e) {}
+      toast('TOOD confirmé \u2726'); refreshMailBadge(); await loadData(); renderMail();
+      if (window.loadTasks) window.loadTasks();
+    };
+    $('#t2-m-skip').onclick = async function () {
+      try { await act({ action: 'deleteTask', id: t.id }); } catch (e) {
+        var conf = confirmedSet(); conf[t.id] = 1; jset('tood.mailConfirmed', conf); // repli local
+      }
+      toast('Sans suite'); refreshMailBadge(); await loadData(); renderMail();
+      if (window.loadTasks) window.loadTasks();
+    };
+  }
+
+  /* =================================================================
+     WARNINGTOOD — style dans la liste + alerte + rappel horaire (app ouverte)
+     ================================================================= */
+  function applyUrgent() {
+    document.querySelectorAll('#list .task').forEach(function (row) {
+      var id = (row.id || '').replace(/^t-/, '');
+      row.classList.toggle('urgent', isUrgent(id));
+    });
+  }
+  function firstUrgentOverdue() {
+    var today = todayISO();
+    for (var i = 0; i < T.tasks.length; i++) {
+      var t = T.tasks[i];
+      if (isUrgent(t.id) && t.date && t.date <= today) return t;
+    }
+    // sinon n'importe quelle urgente
+    for (var j = 0; j < T.tasks.length; j++) if (isUrgent(T.tasks[j].id)) return T.tasks[j];
+    return null;
+  }
+  var warnId = null;
+  function showWarn(t) {
+    if (!t) return;
+    warnId = t.id;
+    $('#t2-warn-title').textContent = t.titre || '';
+    $('#t2-warn-sub').textContent = (t.date ? 'Prévu le ' + fmtDate(t.date) + (t.heure ? ' · ' + t.heure : '') + ' · ' : '') + 'rappel chaque heure';
+    $('#t2-warn').classList.add('open'); lock(true);
+  }
+  function wireWarn() {
+    $('#t2-warn-done').onclick = async function () {
+      try { await act({ action: 'completeTask', id: warnId }); logDone(warnId); setUrgent(warnId, false); toast('Réglé \u2726'); if (window.loadTasks) window.loadTasks(); }
+      catch (e) { toast('Échec — réessaie'); }
+      closeAll();
+    };
+    $('#t2-warn-snooze').onclick = async function () {
+      try { await act({ action: 'updateTask', id: warnId, date: addDaysISO(0), heure: '' }); } catch (e) {}
+      toast('Repoussé d\u2019une heure'); closeAll();
+    };
+    $('#t2-warn-mute').onclick = function () { setUrgent(warnId, false); toast('Rappels coupés'); if (window.loadTasks) window.loadTasks(); closeAll(); };
+  }
+  // rappel horaire tant que l'app est ouverte (le vrai push horaire = trigger Apps Script)
+  function startHourly() {
+    setInterval(function () {
+      if (document.hidden) return;
+      var t = firstUrgentOverdue();
+      if (t) toast('\u23F0 Urgent : ' + t.titre);
+    }, 3600000);
+  }
+
+  /* =================================================================
+     LISTE : tap -> détail, swipe, urgence, journal de complétion
+     ================================================================= */
+  function enhanceRow(row) {
+    if (row.dataset.t2) return; row.dataset.t2 = '1';
+    var id = (row.id || '').replace(/^t-/, '');
+    // urgence
+    row.classList.toggle('urgent', isUrgent(id));
+    // wrap pour swipe
+    var wrap = document.createElement('div'); wrap.className = 't2-swipe';
+    row.parentNode.insertBefore(wrap, row);
+    wrap.appendChild(el('<div class="t2-swipe-act left">\u2713 Terminer</div>'));
+    wrap.appendChild(el('<div class="t2-swipe-act right">Demain \u2192</div>'));
+    wrap.appendChild(row);
+    // swipe tactile
+    var x0 = null, dx = 0, moving = false;
+    row.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; dx = 0; moving = false; row.style.transition = 'none'; }, { passive: true });
+    row.addEventListener('touchmove', function (e) {
+      if (x0 == null) return;
+      dx = e.touches[0].clientX - x0;
+      if (Math.abs(dx) > 6) moving = true;
+      row.style.transform = 'translateX(' + dx + 'px)';
+    }, { passive: true });
+    row.addEventListener('touchend', function () {
+      row.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1)';
+      var TH = 96;
+      if (dx > TH) { row.style.transform = 'translateX(0)'; if (window.complete) window.complete(id); }
+      else if (dx < -TH) { row.style.transform = 'translateX(0)'; reporter(id); }
+      else { row.style.transform = 'translateX(0)'; }
+      x0 = null;
+    });
+    // tap -> détail (hors coche)
+    row.addEventListener('click', function (e) {
+      if (moving) { moving = false; return; }
+      if (e.target.closest('.check')) return; // laisse complete()
+      openDetail(id);
+    });
+  }
+  async function reporter(id) {
+    try { await act({ action: 'updateTask', id: id, date: addDaysISO(1) }); toast('Reporté à demain'); if (window.loadTasks) window.loadTasks(); }
+    catch (e) { toast('« updateTask » à ajouter côté serveur'); }
+  }
+  function scanList() {
+    var list = $('#list'); if (!list) return;
+    list.querySelectorAll('.task:not([data-t2])').forEach(enhanceRow);
+    // journal : toute tâche qui passe en .done
+    list.querySelectorAll('.task.done:not([data-logged])').forEach(function (row) {
+      row.setAttribute('data-logged', '1');
+      logDone((row.id || '').replace(/^t-/, ''));
+    });
+  }
+  function observeList() {
+    var list = $('#list'); if (!list) return;
+    var mo = new MutationObserver(function () { scanList(); refreshMailBadge(); });
+    mo.observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    scanList();
+  }
+
+  /* =================================================================
+     INIT
+     ================================================================= */
+  function init() {
+    injectHeaderButtons();
+    injectShells();
+    wireDetail();
+    wireWarn();
+    observeList();
+    startHourly();
+    // charge les données pour les écrans annexes + badge mail + urgence liste
+    loadData().then(function () { refreshMailBadge(); applyUrgent(); updateRecord(); });
+    // rafraîchit le badge/urgence quand l'app revient au premier plan
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) loadData().then(function () { refreshMailBadge(); applyUrgent(); }); });
+    // expose pour debug/tests
+    T.openDetail = openDetail; T.openWeek = openWeek; T.openScore = openScore; T.openMail = openMail; T.showWarn = showWarn; T.firstUrgentOverdue = firstUrgentOverdue;
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
 </script>
 </body>
 </html>
