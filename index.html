@@ -309,6 +309,7 @@
   .t2-swipe-act{position:absolute;top:0;bottom:0;display:flex;align-items:center;font:700 13px 'Poppins',sans-serif;color:#fff;padding:0 18px;}
   .t2-swipe-act.left{left:0;right:0;background:var(--ok);justify-content:flex-start;}
   .t2-swipe-act.right{left:0;right:0;background:var(--accent);justify-content:flex-end;}
+  .t2-donewrap .t2-swipe-act{display:none;}
 
 </style>
 </head>
@@ -548,20 +549,32 @@ function toast(msg) {
   function jset(k, v) { try { LS.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
   var T = window.TOOD2 = {
-    tasks: [],
+    tasks: [], pending: [],
     cfg: function () { return { url: LS.getItem('apiUrl') || '', token: LS.getItem('apiToken') || '' }; }
   };
 
   /* ---------- couche données (GET indépendant, même contrat) ---------- */
-  async function loadData() {
+  async function loadData(force) {
     var c = T.cfg();
     if (!c.url || !c.token) return T.tasks;
+    if (!force && T._lastLoad && (Date.now() - T._lastLoad) < 15000) return T.tasks;
     try {
       var res = await fetch(c.url + '?token=' + encodeURIComponent(c.token) + '&mode=tasks');
       var data = await res.json();
-      if (data && data.ok) T.tasks = data.tasks || [];
+      if (data && data.ok) { T.tasks = data.tasks || []; T._lastLoad = Date.now(); }
     } catch (e) {}
     return T.tasks;
+  }
+  async function loadPending(force) {
+    var c = T.cfg();
+    if (!c.url || !c.token) return T.pending;
+    if (!force && T._lastPending && (Date.now() - T._lastPending) < 15000) return T.pending;
+    try {
+      var res = await fetch(c.url + '?token=' + encodeURIComponent(c.token) + '&mode=pending');
+      var data = await res.json();
+      if (data && data.ok) { T.pending = data.tasks || []; T._lastPending = Date.now(); }
+    } catch (e) {}
+    return T.pending;
   }
   // Toutes les écritures passent par le api() du coeur (POST sans header -> pas de preflight CORS).
   async function act(body) {
@@ -620,7 +633,7 @@ function toast(msg) {
   function confirmedSet() { return jget('tood.mailConfirmed', {}); }
   function mailQueue() {
     var conf = confirmedSet();
-    return T.tasks.filter(function (t) { return t.source === 'MAIL' && !conf[t.id] && !t.confirmed; });
+    return (T.pending || []).filter(function (t) { return !conf[t.id]; });
   }
 
   /* =================================================================
@@ -744,14 +757,14 @@ function toast(msg) {
   }
   async function openWeek() { lock(true); await loadData(); renderWeek(); $('#t2-week').classList.add('open'); }
   async function openScore() { lock(true); renderScore(); $('#t2-score').classList.add('open'); }
-  async function openMail() { lock(true); await loadData(); renderMail(); $('#t2-mail').classList.add('open'); }
+  async function openMail() { lock(true); await loadPending(); renderMail(); $('#t2-mail').classList.add('open'); }
 
   /* =================================================================
      DÉTAIL (feuille 2b)
      ================================================================= */
   var curId = null, dirty = false, dDate = '', dTime = '';
   async function openDetail(id) {
-    if (!byId(id)) await loadData();
+    if (!byId(id)) await loadData(true);
     var t = byId(id) || { id: id, titre: '', date: '', heure: '', source: 'MANUEL', note: '' };
     curId = id; dirty = false; dDate = t.date || ''; dTime = t.heure || '';
     // source strip
@@ -925,17 +938,15 @@ function toast(msg) {
     $('#t2-m-date').onclick = function () { mailDate = !mailDate; this.classList.toggle('ok', mailDate); this.querySelector('.st').textContent = mailDate ? 'Validé' : 'À valider'; };
     $('#t2-m-time').onclick = function () { mailTime = !mailTime; this.classList.toggle('ok', mailTime); this.querySelector('.st').textContent = mailTime ? 'Validé' : 'À valider'; };
     $('#t2-m-add').onclick = async function () {
-      var conf = confirmedSet(); conf[t.id] = 1; jset('tood.mailConfirmed', conf);
-      try { await act({ action: 'updateTask', id: t.id, confirmed: 1 }); } catch (e) {}
-      toast('TOOD confirmé \u2726'); refreshMailBadge(); await loadData(); renderMail();
-      if (window.loadTasks) window.loadTasks();
+      try { await act({ action: 'confirmTask', id: t.id }); }
+      catch (e) { var conf = confirmedSet(); conf[t.id] = 1; jset('tood.mailConfirmed', conf); }
+      toast('TOOD confirmé \u2726'); await loadPending(true); refreshMailBadge(); renderMail();
+      await loadData(true); if (window.loadTasks) window.loadTasks();
     };
     $('#t2-m-skip').onclick = async function () {
-      try { await act({ action: 'deleteTask', id: t.id }); } catch (e) {
-        var conf = confirmedSet(); conf[t.id] = 1; jset('tood.mailConfirmed', conf); // repli local
-      }
-      toast('Sans suite'); refreshMailBadge(); await loadData(); renderMail();
-      if (window.loadTasks) window.loadTasks();
+      try { await act({ action: 'deleteTask', id: t.id }); }
+      catch (e) { var conf = confirmedSet(); conf[t.id] = 1; jset('tood.mailConfirmed', conf); }
+      toast('Sans suite'); await loadPending(true); refreshMailBadge(); renderMail();
     };
   }
 
@@ -1032,16 +1043,20 @@ function toast(msg) {
   function scanList() {
     var list = $('#list'); if (!list) return;
     list.querySelectorAll('.task:not([data-t2])').forEach(enhanceRow);
-    // journal : toute tâche qui passe en .done
-    list.querySelectorAll('.task.done:not([data-logged])').forEach(function (row) {
-      row.setAttribute('data-logged', '1');
-      logDone((row.id || '').replace(/^t-/, ''));
-    });
+    list.querySelectorAll('.t2-swipe').forEach(function (w) { if (!w.querySelector('.task')) w.remove(); });
   }
   function observeList() {
     var list = $('#list'); if (!list) return;
-    var mo = new MutationObserver(function () { scanList(); refreshMailBadge(); });
-    mo.observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    var mo = new MutationObserver(function () { scanList(); });
+    mo.observe(list, { childList: true });
+    // journal + masquage swipe au tap sur la coche (complétion cœur)
+    list.addEventListener('click', function (e) {
+      var ck = e.target.closest('.check'); if (!ck) return;
+      var row = ck.closest('.task'); if (!row) return;
+      var id = (row.id || '').replace(/^t-/, '');
+      var w = row.closest('.t2-swipe'); if (w) w.classList.add('t2-donewrap');
+      setTimeout(function () { logDone(id); }, 400);
+    });
     scanList();
   }
 
@@ -1055,10 +1070,16 @@ function toast(msg) {
     wireWarn();
     observeList();
     startHourly();
-    // charge les données pour les écrans annexes + badge mail + urgence liste
-    loadData().then(function () { refreshMailBadge(); applyUrgent(); updateRecord(); });
-    // rafraîchit le badge/urgence quand l'app revient au premier plan
-    document.addEventListener('visibilitychange', function () { if (!document.hidden) loadData().then(function () { refreshMailBadge(); applyUrgent(); }); });
+    // chargement différé : laisse le cœur charger la liste d'abord (perf)
+    setTimeout(function () {
+      loadData().then(function () { applyUrgent(); updateRecord(); });
+      loadPending().then(refreshMailBadge);
+    }, 1500);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) return;
+      loadData(true).then(function () { applyUrgent(); });
+      loadPending(true).then(refreshMailBadge);
+    });
     // expose pour debug/tests
     T.openDetail = openDetail; T.openWeek = openWeek; T.openScore = openScore; T.openMail = openMail; T.showWarn = showWarn; T.firstUrgentOverdue = firstUrgentOverdue;
   }
