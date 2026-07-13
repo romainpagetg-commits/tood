@@ -305,7 +305,13 @@
 
   /* Swipe */
   .t2-swipe{position:relative;margin-bottom:8px;border-radius:var(--radius);overflow:hidden;}
-  .t2-swipe .task{margin-bottom:0;touch-action:pan-y;}
+  .t2-swipe .task{position:relative;z-index:1;background:var(--surface);margin-bottom:0;touch-action:pan-y;}
+  #t2-mic .mic{width:14px;height:20px;position:relative;display:block;}
+  #t2-mic .mic i:nth-child(1){position:absolute;top:0;left:3px;width:8px;height:12px;border-radius:5px;background:#232733;}
+  #t2-mic .mic i:nth-child(2){position:absolute;bottom:2px;left:1px;width:12px;height:6px;border:2px solid #232733;border-top:0;border-radius:0 0 8px 8px;}
+  #t2-mic .mic i:nth-child(3){position:absolute;bottom:0;left:6px;width:2px;height:3px;background:#232733;}
+  #t2-mic.listening{background:var(--accent);}
+  #t2-mic.listening .mic i{background:#fff;border-color:#fff;}
   .t2-swipe-act{position:absolute;top:0;bottom:0;display:flex;align-items:center;font:700 13px 'Poppins',sans-serif;color:#fff;padding:0 18px;}
   .t2-swipe-act.left{left:0;right:0;background:var(--ok);justify-content:flex-start;}
   .t2-swipe-act.right{left:0;right:0;background:var(--accent);justify-content:flex-end;}
@@ -755,7 +761,7 @@ function toast(msg) {
     var w = $('#t2-warn'); if (w) w.classList.remove('open');
     lock(false);
   }
-  async function openWeek() { lock(true); await loadData(); renderWeek(); $('#t2-week').classList.add('open'); }
+  async function openWeek() { lock(true); renderWeek(); $('#t2-week').classList.add('open'); loadData(true).then(renderWeek); }
   async function openScore() { lock(true); renderScore(); $('#t2-score').classList.add('open'); }
   async function openMail() { lock(true); await loadPending(); renderMail(); $('#t2-mail').classList.add('open'); }
 
@@ -763,11 +769,8 @@ function toast(msg) {
      DÉTAIL (feuille 2b)
      ================================================================= */
   var curId = null, dirty = false, dDate = '', dTime = '';
-  async function openDetail(id) {
-    if (!byId(id)) await loadData(true);
-    var t = byId(id) || { id: id, titre: '', date: '', heure: '', source: 'MANUEL', note: '' };
-    curId = id; dirty = false; dDate = t.date || ''; dTime = t.heure || '';
-    // source strip
+  function fillDetail(t) {
+    dDate = t.date || ''; dTime = t.heure || '';
     var srcMap = {
       PHOTO: { dot: '#F5B84D', label: 'Extrait d\u2019une photo', tag: 'PHOTO', bg: 'rgba(245,184,77,.2)', col: '#A87312' },
       MAIL: { dot: '#8B93FF', label: 'Reçue par mail', tag: 'MAIL', bg: 'rgba(139,147,255,.16)', col: '#5A63D8' },
@@ -778,11 +781,16 @@ function toast(msg) {
     $('#t2-d-titre').value = t.titre || '';
     $('#t2-d-note').value = t.note || '';
     refreshWhen();
-    // urgent
-    $('#t2-d-urgent').classList.toggle('on', isUrgent(id));
+    $('#t2-d-urgent').classList.toggle('on', isUrgent(t.id));
     $('#t2-d-save').style.display = 'none';
     $('#t2-d-confirm').classList.remove('open');
+  }
+  async function openDetail(id, fallbackTitre) {
+    curId = id; dirty = false;
+    var t = byId(id);
+    fillDetail(t || { id: id, titre: fallbackTitre || '', date: '', heure: '', source: 'MANUEL', note: '' });
     $('#t2-detail').classList.add('open'); lock(true);
+    if (!t) { await loadData(true); t = byId(id); if (t && curId === id) fillDetail(t); }
   }
   function refreshWhen() {
     $('#t2-d-datev').textContent = dDate ? fmtDate(dDate) : 'Ajouter';
@@ -1033,7 +1041,8 @@ function toast(msg) {
     row.addEventListener('click', function (e) {
       if (moving) { moving = false; return; }
       if (e.target.closest('.check')) return; // laisse complete()
-      openDetail(id);
+      var tt = row.querySelector('.task-title');
+      openDetail(id, tt ? tt.textContent : '');
     });
   }
   async function reporter(id) {
@@ -1063,11 +1072,33 @@ function toast(msg) {
   /* =================================================================
      INIT
      ================================================================= */
+  function initVoice() {
+    var bar = document.querySelector('.capture .bar'); if (!bar) return;
+    var cam = document.getElementById('btn-photo');
+    var mic = el('<button class="icon-btn" id="t2-mic" title="Dict\u00e9e" aria-label="Ajouter en vocal"><span class="mic"><i></i><i></i><i></i></span></button>');
+    if (cam) bar.insertBefore(mic, cam); else bar.appendChild(mic);
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { mic.addEventListener('click', function () { toast('Dict\u00e9e non support\u00e9e sur ce navigateur'); }); return; }
+    var rec = new SR(); rec.lang = 'fr-FR'; rec.interimResults = false; rec.maxAlternatives = 1;
+    var busy = false;
+    mic.addEventListener('click', function () { if (busy) { try { rec.stop(); } catch (e) {} return; } try { rec.start(); } catch (e) {} });
+    rec.onstart = function () { busy = true; mic.classList.add('listening'); toast('Parle\u2026'); };
+    rec.onerror = function () { busy = false; mic.classList.remove('listening'); };
+    rec.onend = function () { busy = false; mic.classList.remove('listening'); };
+    rec.onresult = function (e) {
+      var txt = ''; for (var i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
+      txt = txt.trim(); if (!txt) return;
+      var inp = document.getElementById('titre'); if (inp) inp.value = txt;
+      var send = document.getElementById('btn-send'); if (send) setTimeout(function () { send.click(); }, 150);
+    };
+  }
+
   function init() {
     injectHeaderButtons();
     injectShells();
     wireDetail();
     wireWarn();
+    initVoice();
     observeList();
     startHourly();
     // chargement différé : laisse le cœur charger la liste d'abord (perf)
