@@ -791,7 +791,7 @@ function toast(msg) {
     $('#t2-d-note').value = t.note || '';
     refreshWhen();
     $('#t2-d-urgent').classList.toggle('on', isUrgent(t.id));
-    $('#t2-d-save').style.display = 'none';
+    setEditMode(false);
     $('#t2-d-confirm').classList.remove('open');
   }
   async function openDetail(id, fallbackTitre) {
@@ -805,8 +805,32 @@ function toast(msg) {
     $('#t2-d-datev').textContent = dDate ? fmtDate(dDate) : 'Ajouter';
     $('#t2-d-timev').textContent = dTime ? dTime : 'Ajouter';
   }
-  function markDirty() { dirty = true; $('#t2-d-save').style.display = 'block'; }
-  function closeDetail() { $('#t2-detail').classList.remove('open'); lock(false); curId = null; }
+  function setEditMode(on) {
+    var done = $('#t2-d-done'), save = $('#t2-d-save');
+    if (!done || !save) return;
+    if (on) {
+      done.style.display = 'none';
+      save.style.display = 'flex';
+      save.className = 't2-primary';
+      save.style.cssText = 'display:flex;background:var(--accent);color:#fff;box-shadow:0 8px 22px rgba(255,107,90,.4)';
+    } else {
+      done.style.display = 'flex';
+      save.style.display = 'none';
+      save.className = 't2-ghost';
+      save.style.color = '#E4523F';
+    }
+  }
+  function markDirty() { dirty = true; setEditMode(true); }
+  async function saveDetail() {
+    if (!curId) return true;
+    var body = { action: 'updateTask', id: curId, titre: $('#t2-d-titre').value.trim(), date: dDate, heure: dTime, note: $('#t2-d-note').value };
+    try { await act(body); dirty = false; return true; } catch (e) { return false; }
+  }
+  async function closeDetail() {
+    if (dirty && curId) { await saveDetail(); if (window.loadTasks) window.loadTasks(); }
+    dirty = false;
+    $('#t2-detail').classList.remove('open'); lock(false); curId = null;
+  }
 
   function wireDetail() {
     $('#t2-d-titre').addEventListener('input', markDirty);
@@ -824,9 +848,9 @@ function toast(msg) {
       catch (e) { toast('Échec — réessaie'); }
     };
     $('#t2-d-save').onclick = async function () {
-      var body = { action: 'updateTask', id: curId, titre: $('#t2-d-titre').value.trim(), date: dDate, heure: dTime, note: $('#t2-d-note').value };
-      try { await act(body); dirty = false; this.style.display = 'none'; toast('Modifs enregistrées'); if (window.loadTasks) window.loadTasks(); }
-      catch (e) { toast('« updateTask » à ajouter côté serveur'); }
+      var ok = await saveDetail();
+      if (ok) { setEditMode(false); toast('Modifs enregistrées'); if (window.loadTasks) window.loadTasks(); }
+      else { toast('Échec — réessaie'); }
     };
     function askDel() { $('#t2-d-cf-txt').innerHTML = '« ' + esc($('#t2-d-titre').value || 'Cette tâche') + ' » sera retirée définitivement.'; $('#t2-d-confirm').classList.add('open'); }
     $('#t2-d-del').onclick = askDel; $('#t2-d-del2').onclick = askDel;
