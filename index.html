@@ -315,6 +315,29 @@
   #t2-prog.ok .t2-prog-fill{background:var(--ok);}
   #t2-prog.ok .t2-prog-spark{background:var(--ok);animation:none;}
   @keyframes t2pulse{0%,100%{transform:scale(.6);opacity:.5}50%{transform:scale(1);opacity:1}}
+  .t2-loc{display:flex;gap:8px;margin-top:8px;}
+  .t2-locbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--text);font:600 13px 'Poppins',system-ui,sans-serif;cursor:pointer;}
+  .t2-locbtn.accent{background:rgba(255,107,90,.1);border-color:rgba(255,107,90,.4);color:var(--accent-press);}
+  .t2-locbtn:active{background:var(--surface2);}
+  .t2-pin{width:11px;height:11px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.2px solid currentColor;display:block;}
+  .t2-nav{width:0;height:0;border-left:9px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;display:block;}
+  .t2-depart{margin-top:12px;display:flex;align-items:center;gap:11px;background:rgba(139,147,255,.1);border:1px solid rgba(139,147,255,.28);border-radius:12px;padding:11px 13px;}
+  .t2-depart .car{font-size:19px;flex:0 0 auto;}
+  .t2-depart .txt{font-size:12.5px;line-height:1.4;color:#5A63D8;}
+  .t2-depart .txt b{font-family:'Poppins',sans-serif;font-weight:700;color:#3B44C7;}
+  .t2-leave{display:inline-flex;align-items:center;gap:3px;font-family:'Poppins',sans-serif;font-weight:700;font-size:11px;color:#5A63D8;background:rgba(139,147,255,.14);padding:2px 7px;border-radius:6px;}
+  .t2-durrow{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+  .t2-durlbl{font:600 13px 'Poppins',system-ui,sans-serif;color:var(--text);}
+  .t2-stepper{display:flex;align-items:center;gap:2px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:3px;}
+  .t2-stepper button{width:40px;height:40px;border:0;background:transparent;font-size:22px;font-weight:600;color:var(--accent-press);border-radius:9px;cursor:pointer;line-height:1;}
+  .t2-stepper button:active{background:var(--surface2);}
+  .t2-stepper #t2-d-durval{min-width:26px;text-align:center;font:700 15px 'Poppins',system-ui,sans-serif;color:var(--text);}
+  .t2-stepper .u{font-size:12px;color:var(--muted);margin:0 6px 0 1px;}
+  .t2-cf-card{width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:13px 92px 13px 14px;cursor:pointer;position:relative;}
+  .t2-cf-card:active{border-color:var(--accent);background:rgba(255,107,90,.05);}
+  .t2-cf-card .tt{font:600 15.5px system-ui,sans-serif;color:var(--text);}
+  .t2-cf-card .mm{font-size:12.5px;color:var(--muted);margin-top:3px;overflow-wrap:break-word;}
+  .t2-cf-card .pick{position:absolute;right:12px;top:50%;transform:translateY(-50%);font:700 10px 'Poppins',sans-serif;letter-spacing:.5px;color:var(--accent-press);background:rgba(255,107,90,.12);padding:6px 9px;border-radius:8px;}
   #t2-mic .mic{width:14px;height:20px;position:relative;display:block;}
   #t2-mic .mic i:nth-child(1){position:absolute;top:0;left:3px;width:8px;height:12px;border-radius:5px;background:#232733;}
   #t2-mic .mic i:nth-child(2){position:absolute;bottom:2px;left:1px;width:12px;height:6px;border:2px solid #232733;border-top:0;border-radius:0 0 8px 8px;}
@@ -686,6 +709,18 @@ function toast(msg) {
               '<button class="t2-when2" id="t2-d-date"><span style="width:18px;height:18px;position:relative;display:block;flex:0 0 18px"><i style="position:absolute;top:2px;left:0;width:18px;height:15px;border:2px solid #FF6B5A;border-radius:4px"></i><i style="position:absolute;top:6px;left:0;width:18px;height:2px;background:#FF6B5A"></i><i style="position:absolute;top:-1px;left:4px;width:2px;height:5px;background:#FF6B5A;border-radius:2px"></i><i style="position:absolute;top:-1px;right:4px;width:2px;height:5px;background:#FF6B5A;border-radius:2px"></i></span><span style="display:flex;flex-direction:column;line-height:1.25"><span class="v" id="t2-d-datev">—</span><span class="s">date</span></span></button>' +
               '<button class="t2-when2" id="t2-d-time"><span style="width:18px;height:18px;border:2px solid #FF6B5A;border-radius:50%;position:relative;display:block;flex:0 0 18px"><i style="position:absolute;left:50%;top:50%;width:2px;height:5px;background:#FF6B5A;transform:translate(-50%,-92%);border-radius:2px"></i><i style="position:absolute;left:50%;top:50%;width:5px;height:2px;background:#FF6B5A;transform:translateY(-50%);border-radius:2px"></i></span><span style="display:flex;flex-direction:column;line-height:1.25"><span class="v" id="t2-d-timev">—</span><span class="s">heure</span></span></button>' +
             '</div>' +
+            '<div class="t2-label">LIEU</div>' +
+            '<input class="t2-input" id="t2-d-lieu" placeholder="Adresse ou lieu (optionnel)">' +
+            '<div class="t2-loc" id="t2-d-locrow" style="display:none">' +
+              '<button class="t2-locbtn" id="t2-d-map"><span class="t2-pin"></span>Carte</button>' +
+              '<button class="t2-locbtn accent" id="t2-d-dir"><span class="t2-nav"></span>Itinéraire</button>' +
+            '</div>' +
+            '<div class="t2-depart" id="t2-d-depart" style="display:none"></div>' +
+            '<div class="t2-durrow" id="t2-d-durrow" style="display:none">' +
+              '<span class="t2-durlbl">Durée sur place</span>' +
+              '<div class="t2-stepper"><button id="t2-d-durminus" aria-label="Moins">\u2013</button><span id="t2-d-durval">30</span><span class="u">min</span><button id="t2-d-durplus" aria-label="Plus">+</button></div>' +
+            '</div>' +
+            '<button class="t2-locbtn" id="t2-d-recalc" style="display:none;width:100%;margin-top:8px"><span class="t2-nav"></span>Estimer le départ depuis ma position</button>' +
             '<div class="t2-label">NOTE</div>' +
             '<textarea class="t2-ta" id="t2-d-note" rows="3"></textarea>' +
             '<div class="t2-toggle">' +
@@ -709,6 +744,23 @@ function toast(msg) {
               '<button class="t2-primary" style="background:#E5484D;box-shadow:none;height:50px" id="t2-d-cf-yes">Supprimer</button>' +
             '</div>' +
           '</div></div>' +
+        '</div>' +
+      '</div>'
+    ));
+
+    // ---- Conflit d'agenda (agenda intelligent)
+    root.appendChild(el(
+      '<div class="t2-wrap" id="t2-conflict">' +
+        '<div class="t2-scrim" data-close></div>' +
+        '<div class="t2-sheet">' +
+          '<div class="t2-grab"></div>' +
+          '<div style="padding:4px 20px 24px">' +
+            '<div style="width:56px;height:56px;border-radius:50%;background:rgba(245,130,13,.14);display:flex;align-items:center;justify-content:center;margin:2px auto 0"><span style="font-family:Poppins,sans-serif;font-weight:700;color:#F5820D;font-size:28px;line-height:1">!</span></div>' +
+            '<div style="text-align:center;font:700 19px Poppins,sans-serif;color:#232733;margin-top:12px">Deux rendez-vous se chevauchent</div>' +
+            '<div style="text-align:center;font-size:13px;line-height:1.5;color:#8D867A;margin-top:6px">Lequel est prioritaire ? Je décale l\'autre juste après.</div>' +
+            '<div id="t2-cf-cards" style="display:flex;flex-direction:column;gap:10px;margin-top:18px"></div>' +
+            '<button class="t2-ghost" id="t2-cf-keep" style="margin-top:10px">Garder les deux tels quels</button>' +
+          '</div>' +
         '</div>' +
       '</div>'
     ));
@@ -777,7 +829,41 @@ function toast(msg) {
   /* =================================================================
      DÉTAIL (feuille 2b)
      ================================================================= */
-  var curId = null, dirty = false, dDate = '', dTime = '';
+  var curId = null, dirty = false, dDate = '', dTime = '', dDur = 0;
+  function withGeo(cb) {
+    if (!navigator.geolocation) { toast('GPS indisponible'); cb(''); return; }
+    toast('Localisation…');
+    navigator.geolocation.getCurrentPosition(
+      function (p) { T._geo = p.coords.latitude + ',' + p.coords.longitude; cb(T._geo); },
+      function () { toast('Position refusée'); cb(''); },
+      { timeout: 6000, maximumAge: 60000 });
+  }
+  function renderLieu(lieu, depart, heure) {
+    var has = !!lieu;
+    $('#t2-d-locrow').style.display = has ? 'flex' : 'none';
+    $('#t2-d-durrow').style.display = has ? 'flex' : 'none';
+    $('#t2-d-durval').textContent = dDur || 30;
+    var dep = $('#t2-d-depart'), rc = $('#t2-d-recalc');
+    if (has && depart) {
+      dep.style.display = 'flex';
+      dep.innerHTML = '<span class="car">\uD83D\uDE97</span><span class="txt">Départ conseillé <b>' + esc(depart) + '</b>' + (heure ? ' pour être à l\'heure (' + esc(heure) + ')' : '') + ' · depuis ta position</span>';
+      rc.style.display = 'block'; rc.innerHTML = '<span class="t2-nav"></span>Recalculer depuis ma position';
+    } else {
+      dep.style.display = 'none'; dep.innerHTML = '';
+      rc.style.display = (has && heure) ? 'block' : 'none';
+      rc.innerHTML = '<span class="t2-nav"></span>Estimer le départ depuis ma position';
+    }
+  }
+  function openDirections(dest) {
+    var base = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest) + '&travelmode=driving';
+    if (navigator.geolocation) {
+      toast('Localisation\u2026');
+      navigator.geolocation.getCurrentPosition(
+        function (p) { window.open(base + '&origin=' + p.coords.latitude + ',' + p.coords.longitude, '_blank'); },
+        function () { window.open(base, '_blank'); },
+        { timeout: 6000, maximumAge: 60000 });
+    } else window.open(base, '_blank');
+  }
   function fillDetail(t) {
     dDate = t.date || ''; dTime = t.heure || '';
     var srcMap = {
@@ -791,6 +877,9 @@ function toast(msg) {
     $('#t2-d-note').value = t.note || '';
     refreshWhen();
     $('#t2-d-urgent').classList.toggle('on', isUrgent(t.id));
+    dDur = t.duree || 0;
+    $('#t2-d-lieu').value = t.lieu || '';
+    renderLieu(t.lieu || '', t.depart || '', t.heure || '');
     setEditMode(false);
     $('#t2-d-confirm').classList.remove('open');
   }
@@ -823,7 +912,8 @@ function toast(msg) {
   function markDirty() { dirty = true; setEditMode(true); }
   async function saveDetail() {
     if (!curId) return true;
-    var body = { action: 'updateTask', id: curId, titre: $('#t2-d-titre').value.trim(), date: dDate, heure: dTime, note: $('#t2-d-note').value };
+    var body = { action: 'updateTask', id: curId, titre: $('#t2-d-titre').value.trim(), date: dDate, heure: dTime, note: $('#t2-d-note').value, lieu: $('#t2-d-lieu').value.trim(), duree: dDur };
+    if (T._geo && body.lieu) body.origin = T._geo;
     try { await act(body); dirty = false; return true; } catch (e) { return false; }
   }
   async function closeDetail() {
@@ -841,6 +931,21 @@ function toast(msg) {
     pd.onchange = function (e) { dDate = e.target.value; refreshWhen(); markDirty(); };
     pt.onchange = function (e) { dTime = e.target.value; refreshWhen(); markDirty(); };
     $('#t2-d-urgent').onclick = function () { var on = !this.classList.contains('on'); this.classList.toggle('on', on); setUrgent(curId, on); };
+    $('#t2-d-lieu').addEventListener('input', function () { markDirty(); renderLieu(this.value.trim(), '', dTime); });
+    $('#t2-d-map').onclick = function () { var q = $('#t2-d-lieu').value.trim(); if (q) window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q), '_blank'); };
+    $('#t2-d-dir').onclick = function () { var q = $('#t2-d-lieu').value.trim(); if (q) openDirections(q); };
+    $('#t2-d-durminus').onclick = function () { dDur = Math.max(0, (dDur || 30) - 5); $('#t2-d-durval').textContent = dDur; markDirty(); };
+    $('#t2-d-durplus').onclick = function () { dDur = (dDur || 30) + 5; $('#t2-d-durval').textContent = dDur; markDirty(); };
+    $('#t2-d-recalc').onclick = function () {
+      var lieu = $('#t2-d-lieu').value.trim(); if (!lieu || !dTime) { toast('Ajoute un lieu et une heure'); return; }
+      var id = curId;
+      withGeo(function (o) {
+        if (!o) return;
+        act({ action: 'updateTask', id: id, origin: o, lieu: lieu, duree: dDur, heure: dTime, date: dDate }).then(function () {
+          loadData(true).then(function () { var t = byId(id); if (t && curId === id) { dDur = t.duree || dDur; renderLieu(t.lieu || lieu, t.depart || '', t.heure || dTime); } decorateRows(); if (window.loadTasks) window.loadTasks(); });
+        }).catch(function () { toast('Trajet indisponible'); });
+      });
+    };
     $('#t2-detail .t2-scrim').addEventListener('click', closeDetail);
 
     $('#t2-d-done').onclick = async function () {
@@ -1082,6 +1187,58 @@ function toast(msg) {
     try { await act({ action: 'updateTask', id: id, date: addDaysISO(1) }); toast('Reporté à demain'); if (window.loadTasks) window.loadTasks(); }
     catch (e) { toast('« updateTask » à ajouter côté serveur'); }
   }
+  /* ---------- agenda intelligent : chevauchements ---------- */
+  function cfHm(s) { var p = String(s).split(':'); return (parseInt(p[0], 10) || 0) * 60 + (parseInt(p[1], 10) || 0); }
+  function cfKey(a, b) { return [String(a), String(b)].sort().join('|'); }
+  function cfMin2hhmm(m) { m = ((m % 1440) + 1440) % 1440; return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + (m % 60)).slice(-2); }
+  function decorateRows() {
+    var list = $('#list'); if (!list) return;
+    list.querySelectorAll('.task').forEach(function (row) {
+      var id = (row.id || '').replace(/^t-/, ''); var t = byId(id); if (!t) return;
+      var meta = row.querySelector('.task-meta'); if (!meta) return;
+      var old = meta.querySelector('.t2-leave'); if (old) old.remove();
+      if (t.depart) meta.appendChild(el('<span class="t2-leave">\uD83D\uDE97 ' + esc(t.depart) + '</span>'));
+    });
+  }
+  function detectConflicts() {
+    var w = $('#t2-conflict'); if (w && w.classList.contains('open')) return;
+    var ack = jget('tood.confAck', {});
+    var ts = (T.tasks || []).filter(function (t) { return t.date && t.heure; });
+    for (var i = 0; i < ts.length; i++) for (var j = i + 1; j < ts.length; j++) {
+      var a = ts[i], b = ts[j]; if (a.date !== b.date) continue;
+      var as = cfHm(a.heure), ae = as + (a.duree || 30), bs = cfHm(b.heure), be = bs + (b.duree || 30);
+      if (as < be && bs < ae && !ack[cfKey(a.id, b.id)]) { showConflict(a, b); return; }
+    }
+  }
+  function showConflict(a, b) {
+    var box = $('#t2-cf-cards'); if (!box) return; box.innerHTML = '';
+    T._confPair = [a.id, b.id];
+    [a, b].forEach(function (t) {
+      var other = (t === a) ? b : a;
+      var meta = esc(t.heure) + (t.duree ? (' · ' + t.duree + ' min') : '') + (t.lieu ? (' · ' + esc(t.lieu)) : '');
+      var card = el('<button class="t2-cf-card"><div class="tt">' + esc(t.titre) + '</div><div class="mm">' + meta + '</div><div class="pick">Prioritaire</div></button>');
+      card.onclick = function () { resolveConflict(t, other); };
+      box.appendChild(card);
+    });
+    lock(true); $('#t2-conflict').classList.add('open');
+  }
+  async function resolveConflict(keep, move) {
+    var ack = jget('tood.confAck', {}); ack[cfKey(keep.id, move.id)] = 1; jset('tood.confAck', ack);
+    var end = cfHm(keep.heure) + (keep.duree || 30);
+    if (end <= cfHm(move.heure)) end = cfHm(move.heure) + 60; // sinon pousse d'1h
+    var nh = cfMin2hhmm(end);
+    $('#t2-conflict').classList.remove('open'); lock(false);
+    try { await act({ action: 'updateTask', id: move.id, heure: nh }); toast('« ' + move.titre + ' » décalé à ' + nh); } catch (e) {}
+    loadData(true).then(function () { decorateRows(); if (window.loadTasks) window.loadTasks(); });
+  }
+  function wireConflict() {
+    var w = $('#t2-conflict'); if (!w) return;
+    w.querySelector('.t2-scrim').addEventListener('click', function () { w.classList.remove('open'); lock(false); });
+    $('#t2-cf-keep').onclick = function () {
+      if (T._confPair) { var ack = jget('tood.confAck', {}); ack[cfKey(T._confPair[0], T._confPair[1])] = 1; jset('tood.confAck', ack); }
+      w.classList.remove('open'); lock(false);
+    };
+  }
   function scanList() {
     var list = $('#list'); if (!list) return;
     list.querySelectorAll('.task:not([data-t2])').forEach(enhanceRow);
@@ -1153,6 +1310,7 @@ function toast(msg) {
         p.classList.remove('on');
         setTimeout(function () { fill.style.transition = 'none'; fill.style.width = '0'; setTimeout(function () { fill.style.transition = ''; p.classList.remove('ok'); }, 60); }, 250);
       }, 650);
+      if (ok !== false) setTimeout(function () { loadData(true).then(function () { decorateRows(); detectConflicts(); }); }, 900);
     }
     T.progStart = start; T.progDone = done;
     var send = document.getElementById('btn-send');
@@ -1171,22 +1329,24 @@ function toast(msg) {
     injectShells();
     wireDetail();
     wireWarn();
+    wireConflict();
     initVoice();
     initProgress();
     observeList();
     startHourly();
     // chargement différé : laisse le cœur charger la liste d'abord (perf)
     setTimeout(function () {
-      loadData().then(function () { applyUrgent(); updateRecord(); });
+      loadData().then(function () { applyUrgent(); updateRecord(); decorateRows(); detectConflicts(); });
       loadPending().then(refreshMailBadge);
     }, 1500);
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) return;
-      loadData(true).then(function () { applyUrgent(); });
+      loadData(true).then(function () { applyUrgent(); decorateRows(); detectConflicts(); });
       loadPending(true).then(refreshMailBadge);
     });
     // expose pour debug/tests
     T.openDetail = openDetail; T.openWeek = openWeek; T.openScore = openScore; T.openMail = openMail; T.showWarn = showWarn; T.firstUrgentOverdue = firstUrgentOverdue;
+    T.detectConflicts = detectConflicts; T.decorateRows = decorateRows;
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
